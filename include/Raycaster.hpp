@@ -31,6 +31,7 @@ public:
     void computeFloorGroundVertices();
     std::vector<sf::RectangleShape>& getWallSections();
     sf::Texture* getFloorGroundTexture();
+    float* getzBuffer();
 
 private:
     double getStepX(sf::Texture* texture, Ray ray);
@@ -40,4 +41,5 @@ private:
     std::vector<sf::RectangleShape> m_wallSections;
     sf::Image m_floorGroundImage;
     sf::Texture m_floorGroundTexture;
+    float m_zBuffer[RESX];
 };

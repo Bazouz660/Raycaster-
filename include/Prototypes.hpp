@@ -19,3 +19,8 @@ sf::Color darkenColor(sf::Color c1, double prog);
 std::string removeExtension(const std::string& filename);
 
 sf::Text createText(const std::string& str, sf::Font& font, int fontSize);
+
+float distFrom(sf::Vector2f p1, sf::Vector2f p2);
+double clamp(double min, double max, double value);
+
+float DistanceToPlane(sf::Vector2f pos1, float angle, sf::Vector2f pos2);

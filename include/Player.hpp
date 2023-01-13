@@ -14,18 +14,17 @@ class Player : public Entity
     // Updates the Player for a single frame.
     void update(float dt);
 
+    float getFov();
+
     Raycaster& getRaycaster();
 
     private:
         // The raycaster used to cast rays.
         Raycaster m_raycaster;
 
-        // The position of the player.
-        sf::Vector2f m_position;
-
         // The number of rays to cast.
         int m_numRays;
 
         // The angle range to cast the rays in.
-        float m_angleRange;
+        float m_fov;
 };

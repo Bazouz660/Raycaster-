@@ -28,6 +28,9 @@ Game::Game()
 
     m_player.setPosition(gridToScreen(1, 1, m_grid.getTileSize()));
 
+    // Init test entity
+    m_entity.setPosition(gridToScreen(15, 15, m_grid.getTileSize()));
+
     m_previousTime = m_clock.getElapsedTime();
     m_deltaTime = 0;
     updateView(&m_window);
@@ -90,6 +93,8 @@ void Game::update()
     //handleMouseInput(m_window);
     m_player.update(getFrameTime());
     m_player.handleCollisions(m_grid);
+    m_entity.update(getFrameTime());
+    m_entity.handleCollisions(m_grid);
 }
 
 void Game::render()
@@ -123,16 +128,19 @@ void Game::render()
         m_raycastRenderTexture.draw(wallSections.at(i));
     }
 
+    m_entity.draw3D(m_raycastRenderTexture, m_player.getPosition(), m_player.getAngle(), m_player.getFov() ,m_player.getRaycaster().getzBuffer());
+
 
     m_raycastDrawable.setTexture(&m_raycastRenderTexture.getTexture());
     m_window.draw(m_raycastDrawable);
 
     // Draw the grid.
-    //m_grid.draw(m_gridRenderTexture);
-    //m_player.draw(m_gridRenderTexture);
-    //m_gridRenderTexture.draw(raysArray);
-    //m_gridDrawable.setTexture(&m_gridRenderTexture.getTexture());
-    //m_window.draw(m_gridDrawable);
+    m_grid.draw(m_gridRenderTexture);
+    m_player.draw(m_gridRenderTexture);
+    m_entity.draw(m_gridRenderTexture);
+    m_gridRenderTexture.draw(raysArray);
+    m_gridDrawable.setTexture(&m_gridRenderTexture.getTexture());
+    m_window.draw(m_gridDrawable);
 
     // Draw the UI
     m_ui.drawText(m_window);

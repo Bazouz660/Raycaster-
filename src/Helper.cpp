@@ -75,3 +75,28 @@ sf::Text createText(const std::string& str, sf::Font& font, int fontSize)
     return text;
 }
 
+float distFrom(sf::Vector2f p1, sf::Vector2f p2)
+{
+    float distance = sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+
+    return (distance);
+}
+
+double clamp(double min, double max, double value)
+{
+    if (value > max)
+        return max;
+    if (value < min)
+        return min;
+    return value;
+}
+
+float DistanceToPlane(sf::Vector2f pos1, float angle, sf::Vector2f pos2)
+{
+    // Convert angle from degrees to radians
+    float radians = angle * (M_PI / 180.0f);
+    // Compute the normal vector of the plane (perpendicular to the angle)
+    sf::Vector2f normal(std::cos(radians), std::sin(radians));
+    // Compute the distance from pos2 to the plane
+    return (pos2 - pos1).x * normal.x + (pos2 - pos1).y * normal.y;
+}

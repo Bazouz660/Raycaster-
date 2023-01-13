@@ -53,10 +53,10 @@ std::vector<Raycaster::Ray> Raycaster::getRays()
     return m_rays;
 }
 
-Raycaster::Ray Raycaster::castRay(sf::Vector2f position, float angle, float refAngle, int x)
+Raycaster::Ray Raycaster::castRay(sf::Vector2f playerPosition, float angle, float refAngle, int x)
 {
     Ray ray;
-    sf::Vector2f rayStart = position / (float)m_grid.getTileSize();
+    sf::Vector2f rayStart = playerPosition / (float)m_grid.getTileSize();
     sf::Vector2f rayDir = normalize(sf::Vector2f(std::cos(angle), std::sin(angle)));
     sf::Vector2f unitStepSize = {std::sqrt(1 + (rayDir.y / rayDir.x) * (rayDir.y / rayDir.x)),
     std::sqrt(1 + (rayDir.x / rayDir.y) * (rayDir.x / rayDir.y))};
@@ -106,6 +106,7 @@ Raycaster::Ray Raycaster::castRay(sf::Vector2f position, float angle, float refA
         }
     }
 
+
     if (tileFound) {
         intersection = rayStart + rayDir * distance;
     } else
@@ -118,6 +119,7 @@ Raycaster::Ray Raycaster::castRay(sf::Vector2f position, float angle, float refA
         angleFromRef -= 2 * PI;
 
     ray.length = (distance * float(m_grid.getTileSize())) * std::cos(angleFromRef);
+    m_zBuffer[x] = ray.length;
 
     // Calculate distance of perpendicular ray (Euclidean distance would give fisheye effect!)
     if(ray.side == 0)
@@ -132,7 +134,7 @@ Raycaster::Ray Raycaster::castRay(sf::Vector2f position, float angle, float refA
     wallX -= floor((wallX));
 
 
-
+    /* Floor and ceiling casting, bugged rn as the textures slides under the walls
 
     //Calculate height of line to draw on screen
     int lineHeight = (int)(RESY / (ray.length / m_grid.getTileSize()));
@@ -175,8 +177,8 @@ Raycaster::Ray Raycaster::castRay(sf::Vector2f position, float angle, float refA
 
         double weight = (currentDist) / (distWall);
 
-        double currentFloorX = weight * floorXWall + (1.0 - weight) * rayStart.x;
-        double currentFloorY = weight * floorYWall + (1.0 - weight) * rayStart.y;
+        double currentFloorX = weight * floorXWall + (1.0 - weight) * (rayStart.x);
+        double currentFloorY = weight * floorYWall + (1.0 - weight) * (rayStart.y);
 
         int floorTexX, floorTexY;
         floorTexX = int(currentFloorX * texture->getSize().x * 1.25) % texture->getSize().x;
@@ -187,9 +189,7 @@ Raycaster::Ray Raycaster::castRay(sf::Vector2f position, float angle, float refA
         //ceiling (symmetrical!)
         m_floorGroundImage.setPixel(x, RESY - y - 1, image->getPixel(floorTexX, floorTexY));
     }
-
-
-
+    */
 
 
 
@@ -197,7 +197,7 @@ Raycaster::Ray Raycaster::castRay(sf::Vector2f position, float angle, float refA
     ray.wallX = wallX;
     ray.color = m_grid.getTile(mapCheck.x, mapCheck.y).color;;
     ray.direction = rayDir;
-    ray.origin = position;
+    ray.origin = playerPosition;
     ray.vertices[0].position = ray.origin;
     ray.vertices[0].color = ray.color;
     ray.vertices[1].position = (intersection * float(m_grid.getTileSize()));
@@ -217,13 +217,18 @@ sf::Texture* Raycaster::getFloorGroundTexture()
     return &m_floorGroundTexture;
 }
 
+float* Raycaster::getzBuffer()
+{
+    return m_zBuffer;
+}
+
 void Raycaster::computeWallSections()
 {
     int i = 0;
     std::vector<Ray> rays = getRays();
     sf::RectangleShape wallSection;
     float wallHeight = 83;
-    sf::Texture* texture = ResourceManager::getInstance().getTexture("wall");
+    sf::Texture* texture = ResourceManager::getInstance().getTexture("brain");
     sf::IntRect textureRect;
     m_floorGroundTexture.loadFromImage(m_floorGroundImage);
     

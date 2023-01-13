@@ -5,6 +5,7 @@
 class Entity
 {
 public:
+    Entity();
     // Constructs a new Entity with the given starting position.
     Entity(sf::Vector2f position);
 
@@ -27,13 +28,20 @@ public:
 
     sf::Vector2f getDirection(float angle);
 
+    float getAngle();
+
     // Updates the Entity for a single frame.
     virtual void update(float dt);
 
     // Draws the Entity to the given window.
-    virtual void draw(sf::RenderTarget &window);
+    virtual void draw(sf::RenderTarget &target);
+
+    virtual void draw3D(sf::RenderTarget &target, sf::Vector2f cameraPos, float cameraAngle, float fov, float* zbuffer);
 
 protected:
+    float getSpriteXPosition(sf::Vector2f playerPosition, float playerRotation, float fov);
+    void splitDraw(sf::RenderTarget &window, sf::Vector2f scale,
+    float* zBuffer, sf::Vector2f cameraPos, float cameraAngle);
     // The current position of the Entity.
     sf::Vector2f m_position;
 
@@ -45,6 +53,8 @@ protected:
 
     // The current angle of the Entity.
     float m_angle;
+
+    float m_distanceToPlayer;
 
     // The hitbox of the Entity.
     sf::RectangleShape m_hitbox;

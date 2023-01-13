@@ -32,6 +32,7 @@ private:
     // World
     Grid m_grid;
     Player m_player;
+    Entity m_entity;
 
     // Grid rendering
     sf::RenderTexture m_gridRenderTexture;

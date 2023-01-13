@@ -11,7 +11,7 @@ m_raycaster(grid)
     m_numRays = RESX;
 
     // The angle range to cast the rays in.
-    m_angleRange = 70.f;
+    m_fov = 70.f;
 }
 
 // Handles input from the player and updates the Player.
@@ -54,6 +54,11 @@ Raycaster& Player::getRaycaster()
     return m_raycaster;
 }
 
+float Player::getFov()
+{
+    return m_fov;
+}
+
 // Updates the Player for a single frame.
 void Player::update(float dt)
 {
@@ -65,6 +70,6 @@ void Player::update(float dt)
 
     // Casts rays from the player and stores them in the raycaster object
     m_raycaster.setRays(m_raycaster.castRays(m_position,
-    m_angle * RAD, m_numRays, m_angleRange * RAD));
+    m_angle * RAD, m_numRays, m_fov * RAD));
     m_raycaster.computeWallSections();
 }
